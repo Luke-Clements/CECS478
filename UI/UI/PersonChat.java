@@ -8,7 +8,7 @@ package UI;
 import javafx.scene.control.Label;
 
 /**
- *
+ * This is a place holder for the column on the left listing the people's names
  * @author lukecjm
  */
 public class PersonChat {
@@ -25,6 +25,7 @@ public class PersonChat {
         return ps;
     }
     
+    //will add an asterik to the beginning of a name if a message has not yet been read
     public void updatePersonChat(boolean viewed, String name)
     {
         if(!viewed){
