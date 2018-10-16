@@ -20,15 +20,18 @@ def decryptDirectory(filepathToDirectory):
     for file in fileList:
          if(not os.path.isdir(file)):
              name, ext = os.path.splitext(file)
-             text, key, iv, tag, ext = loadFileFromJSON(file)
-             plaintext = RSADecrypt(key, text, iv, tag, keyPaths.pathToPrivateKey)
+             text, key, tag, ext = loadFileFromJSON(file)
+             plaintext = RSADecrypt(key, text, tag, keyPaths.pathToPrivateKey)
              saveFile(name, plaintext, ext)
              os.remove(file)
 
-def decrypt(ciphertext,key, iv):
+def decrypt(ciphertext, key):
     if len(key) < key_size:
         print("Error: The key must be 256-bits in length.")
         return ()
+
+    iv = ciphertext[0:16]
+    ciphertext = ciphertext[16:len(ciphertext)]
 
     # Construct an AES-GCM Cipher object with the given key and a
     # randomly generated IV.
@@ -45,14 +48,14 @@ def decrypt(ciphertext,key, iv):
 
 def fileDecrypt (filename):
 
-    key, iv, ciphertext, ext = loadFileFromJSON(filename)
+    key, ciphertext, ext = loadFileFromJSON(filename)
 
-    plaintext = messageDecrypt(ciphertext, key, iv)
+    plaintext = messageDecrypt(ciphertext, key)
 
     return (plaintext, ext)
 
-def messageDecrypt(ciphertext, ENCKey, iv):
-    plaintext = decrypt(ciphertext, ENCKey, iv)
+def messageDecrypt(ciphertext, ENCKey):
+    plaintext = decrypt(ciphertext, ENCKey)
 
     #unpads the plaintext
     unpadder = padding.PKCS7(128).unpadder()
@@ -60,7 +63,7 @@ def messageDecrypt(ciphertext, ENCKey, iv):
 
     return plaintext
 
-def RSADecrypt(RSAcipher, ciphertext, iv, tag, RSA_PrivateKeyPath):
+def RSADecrypt(RSAcipher, ciphertext, tag, RSA_PrivateKeyPath):
     with open(RSA_PrivateKeyPath, "rb") as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
@@ -77,6 +80,6 @@ def RSADecrypt(RSAcipher, ciphertext, iv, tag, RSA_PrivateKeyPath):
     h = hmac.HMAC(HMACKey, hashes.SHA256(), backend = default_backend())
     h.update(ciphertext)
     h.verify(tag)
-    plaintext = messageDecrypt(ciphertext, ENCKey, iv)
+    plaintext = messageDecrypt(ciphertext, ENCKey)
 
     return plaintext

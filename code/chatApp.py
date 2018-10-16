@@ -8,36 +8,36 @@ from keyPaths import keyPaths                                        # path to p
 def flowControl():
 
     while True:
-        userContinue = input("Would you like to keep chatting(Y/N)? ").lower()     # prompt user for Y/N
+        userContinue = getMessage("Would you like to keep chatting(Y/N)? ").lower()     # prompt user for Y/N
 
         if userContinue != "yes" and userContinue != "y":   # run if answer "yes" or "y", else 
             break
-        # display list of persons from which messages have been received, but not read
-        # select person to send message to
-        # retrieve person and chat from local
-            # user should have option to read, but not send any additional message
+        # TODO: display list of persons from which messages have been received, but not read
+        # TODO: select person to send message to
+        # TODO: retrieve person and chat from local
+        #       user should have option to read, but not send any additional message
         message = getMessage("Luke").encode() # user input, encode
         # message.encode("utf-8")
 
         print(message)         # print message             
-        RSACipher, ciphertext, iv, tag = RSAEncrypt(message, keyPaths.pathToPublicKey) #pass in message + pubkey to Encrypt
+        RSACipher, ciphertext, tag = RSAEncrypt(message, keyPaths.pathToPublicKey) #pass in message + pubkey to Encrypt
         print(ciphertext)      # print ciphertext
         #print(tag)             # print HMAC tag 
 
         #for testing purposes only
-        testDir = os.getcwd() + "\\testDir" #Windows # gets system directory + test directory
-        #testDir = os.getcwd() + "/testDir" # gets system directory + test directory
+        #testDir = os.getcwd() + "\\testDir" #Windows # gets system directory + test directory
+        testDir = os.getcwd() + "/testDir" # gets system directory + test directory
         
         # print(type(ciphertext))
-        # need to come up with a message naming system to append to "message"
-        saveMessageAsJSON(testDir + "\\m.json", RSACipher, ciphertext, iv, tag) #Windows #saves as JSON file
-        #saveMessageAsJSON(testDir + "/m.json", RSACipher, ciphertext, iv, tag) #saves as JSON file
+        # TODO: need to come up with a message naming system to append to "message"
+        #saveMessageAsJSON(testDir + "\\m.json", RSACipher, ciphertext, tag) #Windows #saves as JSON file
+        saveMessageAsJSON(testDir + "/m.json", RSACipher, ciphertext, tag) #saves as JSON file
 
-        # send message to person
+        # TODO: send message to person
 
         # for testing only
-        RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "\\m.json") #Windows #takes from JSON file
-        #RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "/m.json") #takes from JSON file
-        messageDecrypted = RSADecrypt(RSACipher, text, iv, tag, keyPaths.pathToPrivateKey)
+        #RSACipher, text, tag = loadMessageFromJSON(testDir + "\\m.json") #Windows #takes from JSON file
+        RSACipher, text, tag = loadMessageFromJSON(testDir + "/m.json") #takes from JSON file
+        messageDecrypted = RSADecrypt(RSACipher, text, tag, keyPaths.pathToPrivateKey)
         print(messageDecrypted)   #prints decrypted message
         

@@ -21,8 +21,8 @@ def encryptDirectory(filepathToDirectory):
              name, ext = os.path.splitext(file)
              with open(file, "rb") as someData:
                 plaintext = someData.read()
-             RSAcipher, ciphertext, iv, tag = RSAEncrypt(plaintext,  keyPaths.pathToPublicKey)
-             saveFileAsJSON(name + '.json', ciphertext, iv, RSAcipher, tag,  ext)
+             RSAcipher, ciphertext, tag = RSAEncrypt(plaintext,  keyPaths.pathToPublicKey)
+             saveFileAsJSON(name + '.json', ciphertext, RSAcipher, tag,  ext)
              os.remove(file)
 
 def messageEncryptMAC (message):
@@ -33,22 +33,22 @@ def messageEncryptMAC (message):
     ENCKey = os.urandom(key_size)       #creates string of 32 random bits
     HMACKey = os.urandom(key_size)      #creates string of 32 random bits
 
-    ciphertext, iv, tag = encryptMAC(ENCKey, HMACKey, padded_data) # creates ciphertext, IV 
+    ciphertext, tag = encryptMAC(ENCKey, HMACKey, padded_data) # creates ciphertext
                                                                     # and integrity tag
-    return (ciphertext, iv, tag, ENCKey, HMACKey)
+    return (ciphertext, tag, ENCKey, HMACKey)
 
 def encryptMAC(ENCKey, HMACKey, plaintext):
     if len(HMACKey) < key_size:         # takes length of HMACkey, makes sure it isn't less than 256
         print("Error: the hash key must be greater than 256-bits in length")    # verifies its 256-bits
         return ()
 
-    ciphertext, iv = encrypt(ENCKey, plaintext)       # creates ciphertext and IV using ENCKey and padded plaintext
+    ciphertext = encrypt(ENCKey, plaintext)       # creates ciphertext using ENCKey and padded plaintext
 
     h = hmac.HMAC(HMACKey, hashes.SHA256(), backend=default_backend()) 
     h.update(ciphertext)
     tag = h.finalize()  # create integrity tag from HMAC using SHA-256
 
-    return ciphertext, iv, tag
+    return ciphertext, tag
 
 def encrypt(key, plaintext): #-----------------------------------------------------
     if len(key) < key_size:   # checks length of AES key to make sure it's 256 bits
@@ -68,11 +68,13 @@ def encrypt(key, plaintext): #--------------------------------------------------
     # Encrypt the plaintext and get the associated ciphertext.
     ciphertext = encryptor.update(plaintext) + encryptor.finalize()
 
-    return (ciphertext, iv)
+    ciphertext = iv + ciphertext
+
+    return (ciphertext)
 
 def RSAEncrypt(message, RSA_Publickey_filepath):
 
-    ciphertext, iv, tag, ENCKey, HMACKey = messageEncryptMAC(message) # pass message to create ciphertext, iv, tag,
+    ciphertext, tag, ENCKey, HMACKey = messageEncryptMAC(message) # pass message to create ciphertext, iv, tag,
                                                                       #                         ENCKey, HMACKey  
 
     combinedKey = ENCKey + HMACKey                 # concatenates AESKey and HMACKey
@@ -92,4 +94,4 @@ def RSAEncrypt(message, RSA_Publickey_filepath):
         )
     )
 
-    return(RSACipher, ciphertext, iv, tag)
+    return(RSACipher, ciphertext, tag)

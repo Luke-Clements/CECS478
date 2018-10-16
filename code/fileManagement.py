@@ -8,16 +8,14 @@ def loadMessageFromJSON(filepath):
         data = json.load(json_file)
     
     key = b64decode(data["Key"])
-    iv = b64decode(data["IV"])
     text = b64decode(data["Text"])
     tag = b64decode(data["Tag"])
     json_file.close()
-    return (key, text, iv, tag)
+    return (key, text, tag)
 
-def saveMessageAsJSON(saveFilePath, key, text, iv, tag):
+def saveMessageAsJSON(saveFilePath, key, text, tag):
 
     data = {
-        'IV': b64encode(iv).decode('utf-8'),
         'Key': b64encode(key).decode('utf-8'),
         'Text': b64encode(text).decode('utf-8'),
         'Tag': b64encode(tag).decode('utf-8')
@@ -32,16 +30,14 @@ def loadFileFromJSON(filepath):
         data = json.load(json_file)
 
     key = b64decode(data["Key"])
-    iv = b64decode(data["IV"])
     text = b64decode(data["Text"])
     ext = data["Extension"]
     tag = b64decode(data["Tag"])
     json_file.close()
-    return (text, key, iv, tag, ext)
+    return (text, key, tag, ext)
 
-def saveFileAsJSON (saveFilePath, text, iv, key, tag, ext):
+def saveFileAsJSON (saveFilePath, text, key, tag, ext):
     data = {
-        'IV': b64encode(iv).decode('utf-8'),
         'Key': b64encode(key).decode('utf-8'),
         'Text': b64encode(text).decode('utf-8'),
         'Extension': ext,
