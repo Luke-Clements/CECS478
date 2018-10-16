@@ -34,7 +34,7 @@ def messageEncryptMAC (message):
     HMACKey = os.urandom(key_size)      #creates string of 32 random bits
 
     ciphertext, iv, tag = encryptMAC(ENCKey, HMACKey, padded_data) # creates ciphertext, IV 
-                                                                    #and integrity tag
+                                                                    # and integrity tag
     return (ciphertext, iv, tag, ENCKey, HMACKey)
 
 def encryptMAC(ENCKey, HMACKey, plaintext):
@@ -44,7 +44,7 @@ def encryptMAC(ENCKey, HMACKey, plaintext):
 
     ciphertext, iv = encrypt(ENCKey, plaintext)       # creates ciphertext and IV using ENCKey and padded plaintext
 
-    h = hmac.HMAC(HMACKey, hashes.SHA256(), backend=default_backend()) #
+    h = hmac.HMAC(HMACKey, hashes.SHA256(), backend=default_backend()) 
     h.update(ciphertext)
     tag = h.finalize()  # create integrity tag from HMAC using SHA-256
 
@@ -83,7 +83,7 @@ def RSAEncrypt(message, RSA_Publickey_filepath):
             key_file.read(),
             backend=default_backend()
         )
-    RSACipher = public_key.encrypt(
+    RSACipher = public_key.encrypt( # public key uses combined key and SHA-256 padding to encrypt
         combinedKey,
         a_padding.OAEP(
         mgf=a_padding.MGF1(algorithm=hashes.SHA256()),
