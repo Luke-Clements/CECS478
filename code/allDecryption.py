@@ -20,7 +20,8 @@ def decryptDirectory(filepathToDirectory):
     for file in fileList:
          if(not os.path.isdir(file)):
              name, ext = os.path.splitext(file)
-             plaintext, ext = RSADecrypt(file, keyPaths.pathToPrivateKey)
+             text, key, iv, tag, ext = loadFileFromJSON(file)
+             plaintext = RSADecrypt(key, text, iv, tag, keyPaths.pathToPrivateKey)
              saveFile(name, plaintext, ext)
              os.remove(file)
 
@@ -46,35 +47,36 @@ def fileDecrypt (filename):
 
     key, iv, ciphertext, ext = loadFileFromJSON(filename)
 
-    plaintext = decrypt(ciphertext, key, iv)
+    plaintext = messageDecrypt(ciphertext, key, iv)
+
+    return (plaintext, ext)
+
+def messageDecrypt(ciphertext, ENCKey, iv):
+    plaintext = decrypt(ciphertext, ENCKey, iv)
 
     #unpads the plaintext
     unpadder = padding.PKCS7(128).unpadder()
     plaintext = unpadder.update(plaintext) + unpadder.finalize()
 
-    return (plaintext, ext)
+    return plaintext
 
-def RSADecrypt(filepath, RSA_PrivateKeyPath):
+def RSADecrypt(RSAcipher, ciphertext, iv, tag, RSA_PrivateKeyPath):
     with open(RSA_PrivateKeyPath, "rb") as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
             password = None,
             backend = default_backend())
 
-    ciphertext, RSAcipher, iv, tag, ext = loadFileFromJSON(filepath)
     combinedKey = private_key.decrypt(RSAcipher,
                               a_padding.OAEP(mgf=a_padding.MGF1(algorithm=hashes.SHA256()),
                               algorithm=hashes.SHA256(),
                               label=None)
                               )
-
     ENCKey = combinedKey[0:32]
     HMACKey = combinedKey[32:64]
-
     h = hmac.HMAC(HMACKey, hashes.SHA256(), backend = default_backend())
     h.update(ciphertext)
     h.verify(tag)
-    plaintext = decrypt(ciphertext, ENCKey, iv)
+    plaintext = messageDecrypt(ciphertext, ENCKey, iv)
 
-    return plaintext, ext
-
+    return plaintext
