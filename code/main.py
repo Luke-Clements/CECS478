@@ -1,10 +1,10 @@
-from allEncryption import encryptDirectory
-from allDecryption import decryptDirectory
-from RSAKeyGen import RSAKeyGen
-from keyPaths import keyPaths
-from fileManagement import saveFileAsJSON, saveFile
+from allEncryption import encryptDirectory          # call to encrypt
+from allDecryption import decryptDirectory          # call to decrypt
+from RSAKeyGen import RSAKeyGen                     # generates public + private
+from keyPaths import keyPaths                       # points to current public + private
+from fileManagement import saveFileAsJSON, saveFile  
 import chatApp
-import os
+import os                                           # used for finding directory 
 
 def main():
     #-----------------------------String test-----------------------------
@@ -19,15 +19,16 @@ def main():
     #print('END MYENCRYPT AND MYDECRYPT STRING TEST')
     #-----------------------------/String test----------------------------
 
-    if(not os.path.isfile(keyPaths.pathToPrivateKey) and not os.path.isfile(keyPaths.pathToPublicKey)):
+    if(not os.path.isfile(keyPaths.pathToPrivateKey) and not os.path.isfile(keyPaths.pathToPublicKey)): # If no Public + Private key, generate
         RSAKeyGen(keyPaths.pathToPrivateKey, keyPaths.pathToPublicKey)
-    # workingDirectory = os.getcwd()
-    # filePathToDirectory = workingDirectory +"/testDir"
+    # workingDirectory = os.getcwd()                                        # get computer directory
+    # filePathToDirectory = workingDirectory +"/testDir"                    # add computer directory with test directory
 
-    # encryptDirectory(filePathToDirectory)
+    # encryptDirectory(filePathToDirectory)        # From allEncryption, encrypt
+                                                   # point to test directory
 
-    # decryptDirectory(filePathToDirectory)
-
+    # decryptDirectory(filePathToDirectory)        # From allDecryption, decrypt
+                                                   # point to test directory 
     chatApp.flowControl()
 
 if __name__ == '__main__':
