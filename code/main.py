@@ -3,6 +3,7 @@ from allDecryption import decryptDirectory
 from RSAKeyGen import RSAKeyGen
 from keyPaths import keyPaths
 from fileManagement import saveFileAsJSON, saveFile
+import chatApp
 import os
 
 def main():
@@ -18,14 +19,17 @@ def main():
     #print('END MYENCRYPT AND MYDECRYPT STRING TEST')
     #-----------------------------/String test----------------------------
 
-    if(not os.path.isfile(keyPaths.pathToPrivateKey) and not os.path.isfile(kayPaths.pathToPublicKey)):
+    if(not os.path.isfile(keyPaths.pathToPrivateKey) and not os.path.isfile(keyPaths.pathToPublicKey)):
         RSAKeyGen(keyPaths.pathToPrivateKey, keyPaths.pathToPublicKey)
-    workingDirectory = os.getcwd()
-    filePathToDirectory = workingDirectory +"/TestDirectory"
+    # workingDirectory = os.getcwd()
+    # filePathToDirectory = workingDirectory +"/testDir"
 
-    encryptDirectory(filePathToDirectory)
+    # encryptDirectory(filePathToDirectory)
 
-    decryptDirectory(filePathToDirectory)
+    # decryptDirectory(filePathToDirectory)
+
+    chatApp.flowControl()
 
 if __name__ == '__main__':
     main()
+
