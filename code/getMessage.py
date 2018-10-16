@@ -1,6 +1,6 @@
 import os
 
 def getMessage(person):
-    message = input("Message to " + person + ": ") # User Input, enter person
+    message = input("Message to " + person + ": ") # User Input, enter message
 
-    return message # Return collected user input
+    return message # Returns message
