@@ -2,7 +2,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 
-def RSAKeyGen (pathToPrivateKey, pathToPublicKey):
+def RSAKeyGen (pathToPrivateKey, pathToPublicKey): # generates private + public key
 
     private_key = rsa.generate_private_key(
         public_exponent=65537,
