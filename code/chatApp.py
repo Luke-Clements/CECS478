@@ -2,7 +2,7 @@ import os                                                            # used for 
 from allEncryption import RSAEncrypt                                 # calls to encrypter
 from fileManagement import saveMessageAsJSON, loadMessageFromJSON    # allows saving/loading JSON
 from allDecryption import RSADecrypt                                 # calls to decrypter
-from getMessage import getMessage                                    # 
+from getMessage import getMessage                                    # collects user input for message
 from keyPaths import keyPaths                                        # path to public + private key
 
 def flowControl():
