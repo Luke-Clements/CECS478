@@ -1,5 +1,6 @@
+import os
 
 class keyPaths:
-    pathToPublicKey = '/home/ubuntu/PythonVirtualEnv/bin/.ssh/rsaKey.pem.pub'  # directory to public .pem
-    pathToPrivateKey = '/home/ubuntu/PythonVirtualEnv/bin/.ssh/rsaKey.pem'     # directory to private .pem
+    pathToPublicKey = os.getcwd() + '/.ssh/rsaKey.pem.pub'  # directory to public .pem
+    pathToPrivateKey = os.getcwd() + '/.ssh/rsaKey.pem'     # directory to private .pem
 
