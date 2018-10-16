@@ -27,36 +27,36 @@ def encryptDirectory(filepathToDirectory):
 
 def messageEncryptMAC (message):
 
-    padder = padding.PKCS7(128).padder()
-    padded_data = padder.update(message) + padder.finalize()
+    padder = padding.PKCS7(128).padder() # creates padding 
+    padded_data = padder.update(message) + padder.finalize() # pads message to be a muliple of block size for cipher
 
-    ENCKey = os.urandom(key_size)
-    HMACKey = os.urandom(key_size)
+    ENCKey = os.urandom(key_size)       #creates string of 32 random bits
+    HMACKey = os.urandom(key_size)      #creates string of 32 random bits
 
-    ciphertext, iv, tag = encryptMAC(ENCKey, HMACKey, padded_data)
-
+    ciphertext, iv, tag = encryptMAC(ENCKey, HMACKey, padded_data) # creates ciphertext, IV 
+                                                                    #and integrity tag
     return (ciphertext, iv, tag, ENCKey, HMACKey)
 
 def encryptMAC(ENCKey, HMACKey, plaintext):
-    if len(HMACKey) < key_size:
-        print("Error: the hash key must be greater than 256-bits in length")
+    if len(HMACKey) < key_size:         # takes length of HMACkey, makes sure it isn't less than 256
+        print("Error: the hash key must be greater than 256-bits in length")    # verifies its 256-bits
         return ()
 
-    ciphertext, iv = encrypt(ENCKey, plaintext)
+    ciphertext, iv = encrypt(ENCKey, plaintext)       # creates ciphertext and IV using ENCKey and padded plaintext
 
-    h = hmac.HMAC(HMACKey, hashes.SHA256(), backend=default_backend())
+    h = hmac.HMAC(HMACKey, hashes.SHA256(), backend=default_backend()) #
     h.update(ciphertext)
-    tag = h.finalize()
+    tag = h.finalize()  # create integrity tag from HMAC using SHA-256
 
     return ciphertext, iv, tag
 
-def encrypt(key, plaintext):
-    if len(key) < key_size:
+def encrypt(key, plaintext): #-----------------------------------------------------
+    if len(key) < key_size:   # checks length of AES key to make sure it's 256 bits
         print("Error: the key must be greater than 256-bits in length")
         return ()
 
     # Initializes the iv
-    iv = os.urandom(IVLength)
+    iv = os.urandom(IVLength)       # random string of 16 bits
     # Construct an AES-GCM Cipher object with the given key and a
     # randomly generated IV.
     encryptor = Cipher(
@@ -72,9 +72,10 @@ def encrypt(key, plaintext):
 
 def RSAEncrypt(message, RSA_Publickey_filepath):
 
-    ciphertext, iv, tag, ENCKey, HMACKey = messageEncryptMAC(message)
+    ciphertext, iv, tag, ENCKey, HMACKey = messageEncryptMAC(message) # pass message to create ciphertext, iv, tag,
+                                                                      #                         ENCKey, HMACKey  
 
-    combinedKey = ENCKey + HMACKey
+    combinedKey = ENCKey + HMACKey                 # concatenates AESKey and HMACKey
 
     #load
     with open(RSA_Publickey_filepath, "rb") as key_file:
