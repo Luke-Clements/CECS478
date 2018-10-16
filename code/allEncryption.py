@@ -18,28 +18,24 @@ def encryptDirectory(filepathToDirectory):
     os.chdir(filepathToDirectory)
     for file in fileList:
          if(not os.path.isdir(file)):
-             RSAcipher, ciphertext, iv, tag, ext, filename = RSAEncrypt(file,  keyPaths.pathToPublicKey)
-             saveFileAsJSON( filename + '.json', ciphertext, iv, RSAcipher, tag,  ext)
+             name, ext = os.path.splitext(file)
+             with open(file, "rb") as someData:
+                plaintext = someData.read()
+             RSAcipher, ciphertext, iv, tag = RSAEncrypt(plaintext,  keyPaths.pathToPublicKey)
+             saveFileAsJSON(name + '.json', ciphertext, iv, RSAcipher, tag,  ext)
              os.remove(file)
 
-def fileEncryptMAC (filename):
+def messageEncryptMAC (message):
 
-    name, ext = os.path.splitext(filename)
-
-    with open(filename, "rb") as someData:
-        plaintext = someData.read()
-
-    #pads the plaintext
     padder = padding.PKCS7(128).padder()
-    padded_data = padder.update(plaintext) + padder.finalize()
+    padded_data = padder.update(message) + padder.finalize()
 
     ENCKey = os.urandom(key_size)
     HMACKey = os.urandom(key_size)
 
     ciphertext, iv, tag = encryptMAC(ENCKey, HMACKey, padded_data)
 
-    someData.close()
-    return (ciphertext, iv, tag, ENCKey, HMACKey, ext, name)
+    return (ciphertext, iv, tag, ENCKey, HMACKey)
 
 def encryptMAC(ENCKey, HMACKey, plaintext):
     if len(HMACKey) < key_size:
@@ -74,8 +70,11 @@ def encrypt(key, plaintext):
 
     return (ciphertext, iv)
 
-def RSAEncrypt(filepath, RSA_Publickey_filepath):
-    C, IV, tag, ENCKey, HMACKey, ext, name = fileEncryptMAC(filepath)
+def RSAEncrypt(message, RSA_Publickey_filepath):
+
+    ciphertext, iv, tag, ENCKey, HMACKey = messageEncryptMAC(message)
+
+    combinedKey = ENCKey + HMACKey
 
     #load
     with open(RSA_Publickey_filepath, "rb") as key_file:
@@ -83,8 +82,6 @@ def RSAEncrypt(filepath, RSA_Publickey_filepath):
             key_file.read(),
             backend=default_backend()
         )
-    combinedKey = ENCKey + HMACKey
-
     RSACipher = public_key.encrypt(
         combinedKey,
         a_padding.OAEP(
@@ -94,5 +91,4 @@ def RSAEncrypt(filepath, RSA_Publickey_filepath):
         )
     )
 
-    return(RSACipher, C, IV, tag, ext, name)
-
+    return(RSACipher, ciphertext, iv, tag)
