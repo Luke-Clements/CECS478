@@ -8,7 +8,7 @@ from keyPaths import keyPaths                                        # path to p
 def flowControl():
 
     while True:
-        userContinue = getMessage("Would you like to keep chatting(Y/N)? ").lower()     # prompt user for Y/N
+        userContinue = input("Would you like to keep chatting(Y/N)? ").lower()     # prompt user for Y/N
 
         if userContinue != "yes" and userContinue != "y":   # run if answer "yes" or "y", else 
             break
@@ -25,19 +25,19 @@ def flowControl():
         #print(tag)             # print HMAC tag 
 
         #for testing purposes only
-        #testDir = os.getcwd() + "\\testDir" #Windows # gets system directory + test directory
-        testDir = os.getcwd() + "/testDir" # gets system directory + test directory
+        testDir = os.getcwd() + "\\testDir" #Windows # gets system directory + test directory
+        #testDir = os.getcwd() + "/testDir" # gets system directory + test directory
         
         # print(type(ciphertext))
         # need to come up with a message naming system to append to "message"
-        #saveMessageAsJSON(testDir + "\\m.json", RSACipher, ciphertext, iv, tag) #Windows #saves as JSON file
-        saveMessageAsJSON(testDir + "/m.json", RSACipher, ciphertext, iv, tag) #saves as JSON file
+        saveMessageAsJSON(testDir + "\\m.json", RSACipher, ciphertext, iv, tag) #Windows #saves as JSON file
+        #saveMessageAsJSON(testDir + "/m.json", RSACipher, ciphertext, iv, tag) #saves as JSON file
 
         # send message to person
 
         # for testing only
-        #RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "\\m.json") #Windows #takes from JSON file
-        RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "/m.json") #takes from JSON file
+        RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "\\m.json") #Windows #takes from JSON file
+        #RSACipher, text, iv, tag = loadMessageFromJSON(testDir + "/m.json") #takes from JSON file
         messageDecrypted = RSADecrypt(RSACipher, text, iv, tag, keyPaths.pathToPrivateKey)
         print(messageDecrypted)   #prints decrypted message
         
