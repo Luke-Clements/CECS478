@@ -1,6 +1,6 @@
 
 import os
-from fileManagement import loadFileFromJSON, saveFile
+# from fileManagement import loadFileFromJSON, saveFile
 from cryptography.hazmat.primitives.asymmetric import padding as a_padding
 from cryptography.hazmat.primitives import serialization, hashes, hmac
 from cryptography.hazmat.backends import default_backend
@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
 from keyPaths import keyPaths
+from base64 import b64decode, b64encode
 
 key_size = 32
 
@@ -63,18 +64,23 @@ def messageDecrypt(ciphertext, ENCKey):
 
     return plaintext
 
-def RSADecrypt(RSAcipher, ciphertext, tag, RSA_PrivateKeyPath):
+def RSADecrypt(data, RSA_PrivateKeyPath):
     with open(RSA_PrivateKeyPath, "rb") as key_file:
         private_key = serialization.load_pem_private_key(
             key_file.read(),
             password = None,
             backend = default_backend())
 
+    RSAcipher = b64decode(data["Key"])
+    ciphertext = b64decode(data["Text"])
+    tag = b64decode(data["Tag"])
+
     combinedKey = private_key.decrypt(RSAcipher,
                               a_padding.OAEP(mgf=a_padding.MGF1(algorithm=hashes.SHA256()),
                               algorithm=hashes.SHA256(),
                               label=None)
                               )
+                              
     ENCKey = combinedKey[0:32]
     HMACKey = combinedKey[32:64]
     h = hmac.HMAC(HMACKey, hashes.SHA256(), backend = default_backend())

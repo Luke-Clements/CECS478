@@ -1,6 +1,6 @@
 import os
 
-from fileManagement import saveFileAsJSON
+# from fileManagement import saveFileAsJSON
 from base64 import b64encode
 from cryptography.hazmat.primitives.asymmetric import padding as a_padding
 from cryptography.hazmat.backends import default_backend
@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
 from keyPaths import keyPaths
+from base64 import b64decode, b64encode
 
 key_size = 32
 IVLength = 16
@@ -94,4 +95,10 @@ def RSAEncrypt(message, RSA_Publickey_filepath):
         )
     )
 
-    return(RSACipher, ciphertext, tag)
+    data = {
+        'Key': b64encode(RSACipher).decode('utf-8'),
+        'Text': b64encode(ciphertext).decode('utf-8'),
+        'Tag': b64encode(tag).decode('utf-8')
+        }
+
+    return data

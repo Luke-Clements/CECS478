@@ -2,7 +2,7 @@ from allEncryption import encryptDirectory          # call to encrypt
 from allDecryption import decryptDirectory          # call to decrypt
 from RSAKeyGen import RSAKeyGen                     # generates public + private
 from keyPaths import keyPaths                       # points to current public + private
-from fileManagement import saveFileAsJSON, saveFile  
+# from fileManagement import saveFileAsJSON, saveFile  
 import chatApp
 import os                                           # used for finding directory 
 
