@@ -14,17 +14,17 @@ from base64 import b64decode, b64encode
 key_size = 32
 IVLength = 16
 
-def encryptDirectory(filepathToDirectory):
-    fileList = os.listdir(filepathToDirectory)
-    os.chdir(filepathToDirectory)
-    for file in fileList:
-         if(not os.path.isdir(file)):
-             name, ext = os.path.splitext(file)
-             with open(file, "rb") as someData:
-                plaintext = someData.read()
-             RSAcipher, ciphertext, tag = RSAEncrypt(plaintext,  keyPaths.pathToPublicKey)
-             saveFileAsJSON(name + '.json', ciphertext, RSAcipher, tag,  ext)
-             os.remove(file)
+# def encryptDirectory(filepathToDirectory):
+#     fileList = os.listdir(filepathToDirectory)
+#     os.chdir(filepathToDirectory)
+#     for file in fileList:
+#          if(not os.path.isdir(file)):
+#              name, ext = os.path.splitext(file)
+#              with open(file, "rb") as someData:
+#                 plaintext = someData.read()
+#              RSAcipher, ciphertext, tag = RSAEncrypt(plaintext,  keyPaths.pathToPublicKey)
+#              saveFileAsJSON(name + '.json', ciphertext, RSAcipher, tag,  ext)
+#              os.remove(file)
 
 def messageEncryptMAC (message):
 

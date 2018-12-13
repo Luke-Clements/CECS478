@@ -14,17 +14,17 @@ from base64 import b64decode, b64encode
 
 key_size = 32
 
-def decryptDirectory(filepathToDirectory):
-    fileList = os.listdir(filepathToDirectory)
-    os.chdir(filepathToDirectory)
+# def decryptDirectory(filepathToDirectory):
+#     fileList = os.listdir(filepathToDirectory)
+#     os.chdir(filepathToDirectory)
 
-    for file in fileList:
-         if(not os.path.isdir(file)):
-             name, ext = os.path.splitext(file)
-             text, key, tag, ext = loadFileFromJSON(file)
-             plaintext = RSADecrypt(key, text, tag, keyPaths.pathToPrivateKey)
-             saveFile(name, plaintext, ext)
-             os.remove(file)
+#     for file in fileList:
+#          if(not os.path.isdir(file)):
+#              name, ext = os.path.splitext(file)
+#              text, key, tag, ext = loadFileFromJSON(file)
+#              plaintext = RSADecrypt(key, text, tag, keyPaths.pathToPrivateKey)
+#              saveFile(name, plaintext, ext)
+#              os.remove(file)
 
 def decrypt(ciphertext, key):
     if len(key) < key_size:
@@ -47,13 +47,13 @@ def decrypt(ciphertext, key):
 
     return plaintext
 
-def fileDecrypt (filename):
+# def fileDecrypt (filename):
 
-    key, ciphertext, ext = loadFileFromJSON(filename)
+#     key, ciphertext, ext = loadFileFromJSON(filename)
 
-    plaintext = messageDecrypt(ciphertext, key)
+#     plaintext = messageDecrypt(ciphertext, key)
 
-    return (plaintext, ext)
+#     return (plaintext, ext)
 
 def messageDecrypt(ciphertext, ENCKey):
     plaintext = decrypt(ciphertext, ENCKey)
