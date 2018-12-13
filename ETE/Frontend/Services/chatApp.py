@@ -28,7 +28,7 @@ def flowControl():
         if userContinue == "4":   # run if answer "yes" or "y", else 
             break
 
-        if userContinue == "3":
+        if userContinue == "1":
             friendName = getMessage("Enter your friend's name: ")
             friendJSON = getMessage("Enter your friend's generated id/publicKey raw json: ")
             friendInteraction.saveFriendToJSON(friendName, friendJSON)

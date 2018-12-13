@@ -1,6 +1,7 @@
 import json
 import os
-from keyPaths import loadRSAPublicKey
+from keyPaths import loadRSAPublicKey, keyPaths
+from base64 import b64decode
 
 class friendVariables:
     infoPath = os.getcwd() + "/selfInfo.json"
@@ -10,12 +11,24 @@ def getSelfInfo():
     with open(friendVariables.infoPath, 'r') as json_file:
         user = json.load(json_file)
 
-    public_key = loadRSAPublicKey()
+    with open(keyPaths.pathToPublicKey, 'r') as keyfile:
+        publicKeyAr = keyfile.readlines()
+    keyfile.close()
+
     id = user["id"]
 
+    i = 1
+    length = len(publicKeyAr)
+    publicKeyAr.reverse()
+    publicKey = ""
+    while i <= length:
+        publicKey += publicKeyAr.pop().strip()
+        i += 1
+
+    publicKey.replace("\n", "")
     selfInfo = {
         'friendId': id,
-        'publicKey': public_key
+        'publicKey': publicKey
     }
 
     json_file.close()
