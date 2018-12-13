@@ -10,7 +10,7 @@ import friendInteraction
 
 siteURL = "Lukecjm.me"
 class flowControlVariables:
-    menu = "1: Add Friend\n" + "2: Chat\n" + "3: Exit\n" + "Please choose from the above: "
+    menu = "1: Add Friend\n" + "2: Get Your Info\n" + "3: Chat\n" + "4: Exit\n" + "Please choose from the above: "
 
 def flowControl():
 
@@ -25,12 +25,14 @@ def flowControl():
     while True and id != "3":
         userContinue = getMessage(flowControlVariables.menu);     # prompt user for Y/N
 
-        if userContinue == "3":   # run if answer "yes" or "y", else 
+        if userContinue == "4":   # run if answer "yes" or "y", else 
             break
 
         if userContinue == "3":
             friendName = getMessage("Enter your friend's name: ")
             friendJSON = getMessage("Enter your friend's generated id/publicKey raw json: ")
             friendInteraction.saveFriendToJSON(friendName, friendJSON)
+        if userContinue == "2":
+            print(friendInteraction.getSelfInfo())
         messageInteraction.messageInteraction(siteURL, token, id)
         
