@@ -3,7 +3,7 @@ import connection
 from getMessage import getMessage
 import interpretResponses
 import http.client
-from friendInteraction import saveSelfInfo
+from friendInteraction import saveSelfInfo, getSelfInfo
 
 class regLogVariables:
     menu =  "1: Register\n" + "2: Login\n" + "3: Exit\n" + "Please choose from above: "
@@ -29,11 +29,12 @@ def RegistrationLogin(URL):
     if option != "2" or success == None:
         return None, None
 
-    print("here3")
     token = Login(URL, username, password)
 
     if token == None:
         return None, None
+    else:
+        id = getSelfInfo()["friendId"]
 
     return id, token
     
