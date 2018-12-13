@@ -9,7 +9,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
-from keyPaths import keyPaths
+from keyPaths import loadRSAPrivateKey
 from base64 import b64decode, b64encode
 
 key_size = 32
@@ -65,11 +65,8 @@ def messageDecrypt(ciphertext, ENCKey):
     return plaintext
 
 def RSADecrypt(data, RSA_PrivateKeyPath):
-    with open(RSA_PrivateKeyPath, "rb") as key_file:
-        private_key = serialization.load_pem_private_key(
-            key_file.read(),
-            password = None,
-            backend = default_backend())
+
+    private_key = loadRSAPrivateKey()
 
     RSAcipher = b64decode(data["Key"])
     ciphertext = b64decode(data["Text"])

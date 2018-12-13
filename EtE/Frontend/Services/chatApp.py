@@ -6,8 +6,11 @@ from getMessage import getMessage                                    # collects 
 from keyPaths import keyPaths                                        # path to public + private key
 import registrationLogin
 import messageInteraction
+import friendInteraction
 
 siteURL = "Lukecjm.me"
+class flowControlVariables:
+    menu = "1: Add Friend\n" + "2: Chat" + "3: Exit\n" + "Please choose from the above: "
 
 def flowControl():
 
@@ -20,10 +23,14 @@ def flowControl():
             break
 
     while True and id != 3:
-        userContinue = getMessage("Would you like to keep chatting(Y/N)? ").lower()     # prompt user for Y/N
+        userContinue = getMessage(flowControlVariables.menu);     # prompt user for Y/N
 
-        if userContinue != "yes" and userContinue != "y":   # run if answer "yes" or "y", else 
+        if userContinue == 3:   # run if answer "yes" or "y", else 
             break
 
+        if userContinue == 2:
+            friendName = getMessage("Enter your friend's name: ")
+            friendJSON = getMessage("Enter your friend's generated id/publicKey raw json: ")
+            friendInteraction.saveFriendToJSON(friendName, friendJSON)
         messageInteraction.messageInteraction(siteURL, token, id)
         

@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import serialization, hashes, hmac, padding
 from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
-from keyPaths import keyPaths
+from keyPaths import loadRSAPublicKey
 from base64 import b64decode, b64encode
 
 key_size = 32
@@ -80,12 +80,7 @@ def RSAEncrypt(message, RSA_Publickey_filepath):
 
     combinedKey = ENCKey + HMACKey                 # concatenates AESKey and HMACKey
 
-    #load
-    with open(RSA_Publickey_filepath, "rb") as key_file:
-        public_key = serialization.load_pem_public_key(
-            key_file.read(),
-            backend=default_backend()
-        )
+    public_key = loadRSAPublicKey()
     RSACipher = public_key.encrypt( # public key uses combined key and SHA-256 padding to encrypt
         combinedKey,
         a_padding.OAEP(

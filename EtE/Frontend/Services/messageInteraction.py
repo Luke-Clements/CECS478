@@ -5,7 +5,7 @@ from getMessage import getMessage
 import interpretResponses
 from allEncryption import RSAEncrypt
 from allDecryption import RSADecrypt
-import friendData
+import friendInteraction
 from keyPaths import keyPaths
 
 class messageVariables:
@@ -20,13 +20,19 @@ def messageInteraction(URL, token, userId):
         if option == 1:
             fromIds, datas = getMessages(URL, token, userId)
             friends, messages = decryptMessages(messageVariables.friendListFile, fromIds, datas)
-            displayMessages(friends, messages)
+            if len(friends) > 0:
+                displayMessages(friends, messages)
+            else:
+                print("No new messages")
         elif option == 2:
             friend = getMessage("Which friend would you like to send a message to: ")
-            friendId, publicKeyPath = friendData.loadFriendIdFromJSON(messageVariables.friendListFile, friend)
-            message = getMessage("What message would you like to send: ")
-            RSAEncrypt(message, publicKeyPath)
-            postMessage(URL, token, message, friendId, userId)
+            data = friendInteraction.loadFriendIdFromJSON(messageVariables.friendListFile, friend)
+            if data is not None:
+                message = getMessage("What message would you like to send: ")
+                RSAEncrypt(message, data["publicKey"])
+                postMessage(URL, token, message, data["friendId"], userId)
+            else:
+                print("Friend does not exist\n")
         elif option == 3:
             deleteMessages(URL, token, userId)
         elif option == 4:
@@ -46,7 +52,7 @@ def decryptMessages(filepath, fromIds, datas):
     friendNames = []
     messages = []
     for id in fromIds:
-        friendNames.append(friendData.loadFriendNameFromJSON(filepath, id))
+        friendNames.append(friendInteraction.loadFriendNameFromJSON(filepath, id))
 
     for data in datas:
         messages.append(RSADecrypt(data, keyPaths.pathToPrivateKey))
